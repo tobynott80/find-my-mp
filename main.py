@@ -7,7 +7,7 @@ def searchMP(query): #searches for mp and returns ID
     data = resp.json()
     if resp.status_code == 200:
         if data["totalResults"] == 0:
-            return "Not Found"
+            return 0
         else:
             return str(data["items"][0]["value"]["currentRepresentation"]["member"]["value"]["id"])
     else:
@@ -25,9 +25,11 @@ def mpDetails(mpID):
 
 if __name__ == "__main__":
     search = str(input("Enter PostCode or other search term: "))
-    searchMP(search)
-    firstRes = (data["items"][0]["value"])
-    mp = firstRes["currentRepresentation"]["member"]["value"]
-    print("Your constituancy is {}".format(firstRes["name"]))
-    print("Your MP is {}".format(mp["nameDisplayAs"]))
-    print("Your MP belongs to the {} party".format(mp["latestParty"]["name"]))
+    mpID = searchMP(search)
+    if mpID == 0:
+        print("Not found")
+    else:
+        data = mpDetails(mpID)
+        print("Your constituancy is {}".format(data["value"]["latestHouseMembership"]["membershipFrom"]))
+        print("Your MP is {}".format(data["value"]["nameFullTitle"]))
+        print("Your MP belongs to the {} party".format(data["value"]["latestParty"]["name"]))
